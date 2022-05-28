@@ -1,5 +1,5 @@
-import { Text } from "@chakra-ui/react";
+import { Routes } from "./routes";
 
 export function App() {
-  return <Text>oi</Text>;
+  return <Routes />;
 }
