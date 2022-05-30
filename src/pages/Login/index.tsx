@@ -29,7 +29,7 @@ export const Login = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(signInSchema) });
+  } = useForm<SingInData>({ resolver: yupResolver(signInSchema) });
 
   const handleSignIn = (data: SingInData) => console.log(data);
 
