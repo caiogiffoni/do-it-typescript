@@ -9,7 +9,7 @@ import {
   InputProps as ChakraInputProps,
 } from "@chakra-ui/react";
 import { useEffect, useState, useCallback, useRef } from "react";
-import { FieldError } from "react-hook-form";
+import { FieldError, UseFormRegister } from "react-hook-form";
 import { IconType } from "react-icons";
 
 interface InputProps extends ChakraInputProps {
@@ -17,6 +17,7 @@ interface InputProps extends ChakraInputProps {
   label?: string;
   error?: FieldError | null;
   icon?: IconType;
+  register: any;
 }
 
 type inputVariationOptions = {
@@ -35,6 +36,7 @@ export const Input = ({
   error = null,
   icon,
   label,
+  register,
   ...rest
 }: InputProps) => {
   const [variation, setVariation] = useState("default");
@@ -74,6 +76,7 @@ export const Input = ({
           _placeholder={{ color: "gray.300" }}
           size="lg"
           h="60px"
+          {...register(name)}
           {...rest}
         />
         {!!error && <FormErrorMessage>{error.message}</FormErrorMessage>}

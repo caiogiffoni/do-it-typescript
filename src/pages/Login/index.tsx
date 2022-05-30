@@ -67,16 +67,17 @@ export const Login = () => {
               placeholder="Digite seu login"
               label="Login"
               icon={FaEnvelope}
-              type="email"
               error={errors.email}
-              {...register("email")}
+              register={register}
+              name="email"
             />
             <Input
               placeholder="Digite sua senha"
               icon={FaLock}
               error={errors.password}
               type="password"
-              {...register("password")}
+              register={register}
+              name="password"
             />
           </VStack>
           <Button type="submit">Entrar</Button>
