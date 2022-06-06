@@ -1,48 +1,40 @@
-import {
-  Box,
-  Button,
-  Flex,
-  Grid,
-  Heading,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
-import { Input } from "../../components/Form/Input";
-import { FaEnvelope, FaLock } from "react-icons/fa";
-import { useForm } from "react-hook-form";
-import * as yup from "yup";
+import { Flex } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import * as yup from "yup";
 import { useAuth } from "../../contexts/AuthContext";
-import { LoginInfo } from "./LoginInfo";
-import { LoginForm } from "./LoginForm";
+import { SignupForm } from "./SignupForm";
+import { SignupInfo } from "./SignupInfo";
 
-interface SingInData {
+interface SingUpData {
   email: string;
   password: string;
+  name: string;
+  confirm_password: string;
 }
 
-export const Login = () => {
+export const Signup = () => {
   const [loading, setLoading] = useState(false);
 
-  const { SignIn } = useAuth();
-
-  const signInSchema = yup.object().shape({
+  const sigUpnSchema = yup.object().shape({
+    name: yup.string().required("Nome Obrigatório"),
     email: yup.string().required("Email Obrigatório").email("Email inválido"),
     password: yup.string().required("Senha obrigatória"),
+    confirm_password: yup
+      .string()
+      .required("Confirmação de senha obrigatória")
+      .oneOf([yup.ref("password")], "Senhas diferentes"),
   });
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SingInData>({ resolver: yupResolver(signInSchema) });
+  } = useForm<SingUpData>({ resolver: yupResolver(sigUpnSchema) });
 
-  const handleSignIn = (data: SingInData) => {
-    setLoading(true);
-    SignIn(data)
-      .then((_) => setLoading(false))
-      .catch((err) => setLoading(false));
+  const handleSignUp = (data: SingUpData) => {
+    console.log(data);
   };
 
   return (
@@ -55,7 +47,7 @@ export const Login = () => {
       bgGradient={[
         "linear(to-b, purple.800 65%, white 35%)",
         "linear(to-b, purple.800 65%, white 35%)",
-        "linear(to-r, purple.800 65%, white 35%)",
+        "linear(to-l, purple.800 65%, white 35%)",
       ]}
     >
       <Flex
@@ -64,14 +56,14 @@ export const Login = () => {
         direction={["column", "column", "row"]}
         align="center"
       >
-        <LoginInfo />
-        <LoginForm
+        <SignupForm
           errors={errors}
-          handleSignIn={handleSubmit(handleSignIn)}
+          handleSignUp={handleSubmit(handleSignUp)}
           loading={loading}
           register={register}
         />
       </Flex>
+      <SignupInfo />
     </Flex>
   );
 };

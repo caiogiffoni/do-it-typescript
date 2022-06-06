@@ -8,8 +8,15 @@ import {
   InputLeftElement,
   InputProps as ChakraInputProps,
 } from "@chakra-ui/react";
-import { useEffect, useState, useCallback, useRef } from "react";
-import { FieldError, UseFormRegister } from "react-hook-form";
+import {
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+  ForwardRefRenderFunction,
+  forwardRef,
+} from "react";
+import { FieldError } from "react-hook-form";
 import { IconType } from "react-icons";
 
 interface InputProps extends ChakraInputProps {
@@ -17,7 +24,6 @@ interface InputProps extends ChakraInputProps {
   label?: string;
   error?: FieldError | null;
   icon?: IconType;
-  register: any;
 }
 
 type inputVariationOptions = {
@@ -31,17 +37,12 @@ const inputVariation: inputVariationOptions = {
   filled: "green.500",
 };
 
-export const Input = ({
-  name,
-  error = null,
-  icon,
-  label,
-  register,
-  ...rest
-}: InputProps) => {
+const InputBase: ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
+  { name, error = null, icon, label, ...rest },
+  ref
+) => {
+  const [value, setValue] = useState("");
   const [variation, setVariation] = useState("default");
-
-  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (error) setVariation("error");
@@ -52,12 +53,12 @@ export const Input = ({
   }, [error]);
 
   const handleInputBlur = useCallback(() => {
-    if (inputRef.current?.value && !error) setVariation("filled");
-  }, [error]);
+    if (value.length > 1 && !error) setVariation("filled");
+  }, [error, value]);
 
   return (
     <FormControl isInvalid={!!error}>
-      {label && <FormLabel>{label}</FormLabel>}
+      {label && <FormLabel color={"gray.400"}>{label}</FormLabel>}
       <InputGroup flexDirection={"column"}>
         {icon && (
           <InputLeftElement mt="2.5" color={inputVariation[variation]}>
@@ -72,11 +73,12 @@ export const Input = ({
           onBlurCapture={handleInputBlur}
           bgColor="gray.50"
           variant="outline"
+          onChangeCapture={(e) => setValue(e.currentTarget.value)}
           _hover={{ bgColor: "gray.10" }}
           _placeholder={{ color: "gray.300" }}
           size="lg"
           h="60px"
-          {...register(name)}
+          ref={ref}
           {...rest}
         />
         {!!error && <FormErrorMessage>{error.message}</FormErrorMessage>}
@@ -84,3 +86,5 @@ export const Input = ({
     </FormControl>
   );
 };
+
+export const Input = forwardRef(InputBase);
